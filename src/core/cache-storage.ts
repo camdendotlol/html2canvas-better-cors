@@ -93,6 +93,7 @@ export class Cache {
             const img = new Image();
             img.onload = () => resolve(img);
             img.onerror = async () => {
+                // fallback to CORS proxy
                 img.src = await this.proxy(src);
             };
             //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
