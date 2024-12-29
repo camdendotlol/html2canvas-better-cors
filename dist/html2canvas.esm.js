@@ -5752,10 +5752,19 @@ var Cache = /** @class */ (function () {
                         return [4 /*yield*/, new Promise(function (resolve, reject) {
                                 var img = new Image();
                                 img.onload = function () { return resolve(img); };
-                                img.onerror = function (err) {
-                                    console.log(err);
-                                    reject();
-                                };
+                                img.onerror = function () { return __awaiter(_this, void 0, void 0, function () {
+                                    var _a;
+                                    return __generator(this, function (_b) {
+                                        switch (_b.label) {
+                                            case 0:
+                                                _a = img;
+                                                return [4 /*yield*/, this.proxy(src)];
+                                            case 1:
+                                                _a.src = _b.sent();
+                                                return [2 /*return*/];
+                                        }
+                                    });
+                                }); };
                                 //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
                                 if (isInlineBase64Image(src) || useCORS) {
                                     img.crossOrigin = 'anonymous';
