@@ -92,7 +92,10 @@ export class Cache {
         return await new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => resolve(img);
-            img.onerror = reject;
+            img.onerror = (err) => {
+                console.log(err)
+                reject()
+            };
             //ios safari 10.3 taints canvas with data urls unless crossOrigin is set to anonymous
             if (isInlineBase64Image(src) || useCORS) {
                 img.crossOrigin = 'anonymous';
