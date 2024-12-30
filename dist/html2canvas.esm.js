@@ -5757,9 +5757,11 @@ var Cache = /** @class */ (function () {
                                     return __generator(this, function (_b) {
                                         switch (_b.label) {
                                             case 0:
+                                                // fallback to CORS proxy
                                                 _a = img;
                                                 return [4 /*yield*/, this.proxy(src)];
                                             case 1:
+                                                // fallback to CORS proxy
                                                 _a.src = _b.sent();
                                                 return [2 /*return*/];
                                         }
@@ -5848,6 +5850,9 @@ var Vector = /** @class */ (function () {
     }
     Vector.prototype.add = function (deltaX, deltaY) {
         return new Vector(this.x + deltaX, this.y + deltaY);
+    };
+    Vector.prototype.reverse = function () {
+        return this;
     };
     return Vector;
 }());
@@ -6113,6 +6118,14 @@ var transformPath = function (path, deltaX, deltaY, deltaW, deltaH) {
                 return point.add(deltaX, deltaY + deltaH);
         }
         return point;
+    });
+};
+var reversePath = function (path) {
+    return path
+        .slice(0)
+        .reverse()
+        .map(function (point) {
+        return point.reverse();
     });
 };
 
@@ -7106,12 +7119,16 @@ var CanvasRenderer = /** @class */ (function (_super) {
     };
     CanvasRenderer.prototype.mask = function (paths) {
         this.ctx.beginPath();
+        this.ctx.save();
+        // reset tranform to identity
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.moveTo(0, 0);
         this.ctx.lineTo(this.canvas.width, 0);
         this.ctx.lineTo(this.canvas.width, this.canvas.height);
         this.ctx.lineTo(0, this.canvas.height);
         this.ctx.lineTo(0, 0);
-        this.formatPath(paths.slice(0).reverse());
+        this.ctx.restore();
+        this.formatPath(reversePath(paths));
         this.ctx.closePath();
     };
     CanvasRenderer.prototype.path = function (paths) {
@@ -7305,7 +7322,7 @@ var CanvasRenderer = /** @class */ (function (_super) {
     };
     CanvasRenderer.prototype.renderNodeBackgroundAndBorders = function (paint) {
         return __awaiter(this, void 0, void 0, function () {
-            var styles, hasBackground, borders, backgroundPaintingArea, side, _i, borders_1, border;
+            var styles, hasBackground, borders, backgroundPaintingArea, borderBoxArea_1, side, _i, borders_1, border;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -7332,26 +7349,26 @@ var CanvasRenderer = /** @class */ (function (_super) {
                     case 1:
                         _a.sent();
                         this.ctx.restore();
+                        borderBoxArea_1 = calculateBorderBoxPath(paint.curves);
                         styles.boxShadow
                             .slice(0)
                             .reverse()
                             .forEach(function (shadow) {
                             _this.ctx.save();
-                            var borderBoxArea = calculateBorderBoxPath(paint.curves);
                             var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
-                            var shadowPaintingArea = transformPath(borderBoxArea, -maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
+                            var shadowPaintingArea = transformPath(borderBoxArea_1, shadow.offsetX.number - maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.offsetY.number + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
                             if (shadow.inset) {
-                                _this.path(borderBoxArea);
+                                _this.path(borderBoxArea_1);
                                 _this.ctx.clip();
                                 _this.mask(shadowPaintingArea);
                             }
                             else {
-                                _this.mask(borderBoxArea);
+                                _this.mask(borderBoxArea_1);
                                 _this.ctx.clip();
                                 _this.path(shadowPaintingArea);
                             }
-                            _this.ctx.shadowOffsetX = shadow.offsetX.number + maskOffset;
-                            _this.ctx.shadowOffsetY = shadow.offsetY.number;
+                            _this.ctx.shadowOffsetX = maskOffset;
+                            _this.ctx.shadowOffsetY = 0;
                             _this.ctx.shadowColor = asString(shadow.color);
                             _this.ctx.shadowBlur = shadow.blur.number;
                             _this.ctx.fillStyle = shadow.inset ? asString(shadow.color) : 'rgba(0,0,0,1)';

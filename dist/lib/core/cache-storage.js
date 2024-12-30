@@ -124,9 +124,11 @@ var Cache = /** @class */ (function () {
                                     return __generator(this, function (_b) {
                                         switch (_b.label) {
                                             case 0:
+                                                // fallback to CORS proxy
                                                 _a = img;
                                                 return [4 /*yield*/, this.proxy(src)];
                                             case 1:
+                                                // fallback to CORS proxy
                                                 _a.src = _b.sent();
                                                 return [2 /*return*/];
                                         }
