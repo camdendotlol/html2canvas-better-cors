@@ -1,6 +1,6 @@
 /*!
  * html2canvas 1.4.1 <https://html2canvas.hertzen.com>
- * Copyright (c) 2024 Niklas von Hertzen <https://hertzen.com>
+ * Copyright (c) 2025 Niklas von Hertzen <https://hertzen.com>
  * Released under MIT License
  */
 (function (global, factory) {
@@ -7361,6 +7361,7 @@
                                 .reverse()
                                 .forEach(function (shadow) {
                                 _this.ctx.save();
+                                console.log(shadow);
                                 var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
                                 var shadowPaintingArea = transformPath(borderBoxArea_1, shadow.offsetX.number - maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.offsetY.number + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
                                 if (shadow.inset) {

@@ -802,6 +802,7 @@ var CanvasRenderer = /** @class */ (function (_super) {
                             .reverse()
                             .forEach(function (shadow) {
                             _this.ctx.save();
+                            console.log(shadow);
                             var maskOffset = shadow.inset ? 0 : MASK_OFFSET;
                             var shadowPaintingArea = path_1.transformPath(borderBoxArea_1, shadow.offsetX.number - maskOffset + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.offsetY.number + (shadow.inset ? 1 : -1) * shadow.spread.number, shadow.spread.number * (shadow.inset ? -2 : 2), shadow.spread.number * (shadow.inset ? -2 : 2));
                             if (shadow.inset) {
