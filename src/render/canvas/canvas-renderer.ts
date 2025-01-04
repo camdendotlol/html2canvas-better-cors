@@ -732,6 +732,7 @@ export class CanvasRenderer extends Renderer {
                 .reverse()
                 .forEach((shadow) => {
                     this.ctx.save();
+                    console.log(shadow);
                     const maskOffset = shadow.inset ? 0 : MASK_OFFSET;
                     const shadowPaintingArea = transformPath(
                         borderBoxArea,
